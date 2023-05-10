@@ -1,15 +1,15 @@
 use std "log warning"
 
-def get-lib-dir [] {
-    $env.NU_LIB_DIR? | default (
+def nupm-home [] {
+    $env.NUPM_HOME? | default (
         $env.XDG_DATA_HOME?
         | default ($env.HOME | path join ".local" "share")
-        | path join "nushell" "lib"
+        | path join "nupm"
     )
 }
 
 def get-config-file [] {
-    get-lib-dir | path join "default_config.nu"
+    nupm-home | path join "default_config.nu"
 }
 
 export def "update default" [
@@ -70,8 +70,10 @@ export def "update libs" [
     --reload: bool
     --silent: bool
 ] {
-    for profile in ($env.NU_LIBS | transpose name profile | get profile) {
-        let directory = (get-lib-dir | append $profile.directory | path join)
+    let packages = (nupm-home | path join "packages.nuon" | open)
+
+    for profile in ($packages | transpose name profile | get profile) {
+        let directory = (nupm-home | append $profile.directory | path join)
         if not ($directory | path exists) {
             print $"(ansi red_bold)error(ansi reset): ($directory) does not exist..."
             print $"(ansi cyan)info(ansi reset): pulling the scripts from ($profile.upstream)..."
@@ -97,7 +99,7 @@ export def "update libs" [
 export def "update all" [
     --init: bool
 ] {
-    mkdir (get-lib-dir)
+    mkdir (nupm-home)
     if $init {
         update default --init --silent
         update libs --init --silent
@@ -115,16 +117,16 @@ export def "edit default" [] {
 }
 
 def "nu-complete list-nu-libs" [] {
-    ls (get-lib-dir | path join "**" "*" ".git")
+    ls (nupm-home | path join "**" "*" ".git")
     | get name
     | path parse
     | get parent
-    | str replace (get-lib-dir) ""
+    | str replace (nupm-home) ""
     | str trim -c (char path_sep)
 }
 
 export def "edit lib" [lib: string@"nu-complete list-nu-libs"] {
-    cd (get-lib-dir | path join $lib)
+    cd (nupm-home | path join $lib)
     ^$env.EDITOR .
 }
 
@@ -133,10 +135,10 @@ export def "status" [] {
         {
             name: $lib
             describe: (try {
-                let tag = (git -C (get-lib-dir | path join $lib) describe HEAD)
+                let tag = (git -C (nupm-home | path join $lib) describe HEAD)
                 $tag
             } catch { "" })
-            rev: (git -C (get-lib-dir | path join $lib) rev-parse HEAD)
+            rev: (git -C (nupm-home | path join $lib) rev-parse HEAD)
         }
     }
 }
