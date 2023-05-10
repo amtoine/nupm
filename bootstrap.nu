@@ -34,3 +34,5 @@ def main [] {
 
     ['source default_config.nu'] | dump to "load.nu"
 }
+
+main
