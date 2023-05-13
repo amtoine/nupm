@@ -18,17 +18,6 @@ def install-nupm [directory: string] {
     git clone https://github.com/amtoine/nupm.git (nupm-home | path join $directory)
 }
 
-def pull-default-config [file: string] {
-    mkdir (nupm-home | path join "registry")
-    print $"(ansi cyan)info(ansi reset): pulling default config file..."
-    http get ({
-        scheme: https,
-        host: raw.githubusercontent.com,
-        path: $"/nushell/nushell/main/crates/nu-utils/src/sample_config/default_config.nu",
-    } | url join)
-    | save --force --raw (nupm-home | path join $file)
-}
-
 def main [] {
     mkdir (nupm-home)
 
@@ -47,11 +36,9 @@ def main [] {
         '}'
     ] | dump to "env.nu"
 
-    ['source default_config.nu'] | dump to "load.nu"
+    [''] | dump to "load.nu"
 
     install-nupm "nupm/"
-
-    pull-default-config "default_config.nu"
 }
 
 main
