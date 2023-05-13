@@ -4,11 +4,11 @@ A manager for Nushell packages.
 ## installation
 1. run
 ```nu
-http get https://raw.githubusercontent.com/amtoine/nupm/main/bootstrap.nu | save --force ($nu.temp-path | path join "nupm-bootstrap"); nu ($nu.temp-path | path join "nupm-bootstrap")
+http get https://raw.githubusercontent.com/amtoine/nupm/main/bootstrap/bootstrap.nu | save --force ($nu.temp-path | path join "nupm-bootstrap"); nu ($nu.temp-path | path join "nupm-bootstrap")
 ```
 or
 ```nu
-nu --commands (http get https://raw.githubusercontent.com/amtoine/nupm/main/bootstrap.nu)
+nu --commands (http get https://raw.githubusercontent.com/amtoine/nupm/main/bootstrap/bootstrap.nu)
 ```
 
 2. had to add the following manually to the files in the first comment
