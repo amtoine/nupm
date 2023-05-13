@@ -93,6 +93,7 @@ export def activate [
     ...command: string
     --list: bool
     --from-file: path
+    --source: bool
 ] {
     let load = (nupm-home | path join "load.nu")
 
@@ -105,6 +106,8 @@ export def activate [
     $activations | append (
         if $from_file != null {
             open $from_file | each { "use " ++ $in }
+        } else if $source {
+            $"source ($command | str join ' ')"
         } else {
             $"use ($command | str join ' ')"
         }
