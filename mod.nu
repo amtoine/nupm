@@ -60,7 +60,7 @@ def install-package [
 export def install [
     url?: string
     --list: bool
-    --file: path
+    --from-file: path
 ] {
     let packages = (nupm-home | path join "packages.nuon")
 
@@ -71,12 +71,12 @@ export def install [
         error make --unspanned {msg: "there are no packages installed with `nupm`."}
     }
 
-    if $file != null {
+    if $from_file != null {
         if ($packages | path exists) { $packages | open } else []
         | append (
-            open $file | transpose name url | each {|package|
+            open $from_file | transpose name url | each {|package|
                 print $"installing ($package.name)"
-                let span = (metadata $file | get span)
+                let span = (metadata $from_file | get span)
                 let _ = (install-package $package.url $span)
                 {$package.name: $package.url}
             }
@@ -99,7 +99,7 @@ export def install [
 export def activate [
     ...command: string
     --list: bool
-    --file: path
+    --from-file: path
 ] {
     let load = (nupm-home | path join "load.nu")
 
@@ -110,8 +110,8 @@ export def activate [
     }
 
     $activations | append (
-        if $file != null {
-            open $file | each { "use " ++ $in }
+        if $from_file != null {
+            open $from_file | each { "use " ++ $in }
         } else {
             $"use ($command | str join ' ')"
         }
