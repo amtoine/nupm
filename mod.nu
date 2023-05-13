@@ -33,11 +33,12 @@ def parse-project [
 def install-package [
     url: string
     span: record<start: int, end: int>
+    revision: string
 ] {
     let project = ($url | parse-project $span)
 
     let package = (try {
-        http get $"https://raw.githubusercontent.com/($project)/main/package.nuon"
+        http get $"https://raw.githubusercontent.com/($project)/($revision)/package.nuon"
     } catch {
         error make {
             msg: $"(ansi red_bold)nupm::not_a_package(ansi reset)"
@@ -50,7 +51,9 @@ def install-package [
     })
 
     let out = (do -i {
-        git clone $url (nupm-home | path join "registry" $package.name)
+        let repo = (nupm-home | path join "registry" $package.name)
+        git clone $url $repo
+        git -C $repo checkout $revision
     } | complete)
     if $out.exit_code != 0 {
         error make --unspanned {
@@ -64,6 +67,7 @@ export def install [
     --list: bool
     --from-file: path
     --file: bool
+    --revision: string = "main"
 ] {
     if $list {
         error make --unspanned {msg: "`--list` not supported at the time."}
@@ -72,7 +76,7 @@ export def install [
     if $from_file != null {
         open $from_file | transpose name url | each {|package|
             print $"installing ($package.name)"
-            install-package $package.url (metadata $from_file | get span) | ignore
+            install-package $package.url (metadata $from_file | get span) $revision | ignore
         }
         return
     }
@@ -86,7 +90,7 @@ export def install [
         return
     }
 
-    install-package $url (metadata $url | get span)
+    install-package $url (metadata $url | get span) $revision
 }
 
 export def activate [
