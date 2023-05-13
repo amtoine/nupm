@@ -81,6 +81,11 @@ export def install [
         error make --unspanned {msg: "`nupm install` takes a positional URL argument."}
     }
 
+    if $file {
+        http get $url | save --force (nupm-home | path join "registry" ($url | path basename))
+        return
+    }
+
     install-package $url (metadata $url | get span)
 }
 
