@@ -38,6 +38,18 @@ nupm activate nu-git-manager sugar completions git *
 nupm activate nu-git-manager sugar dotfiles
 ```
 
+### another example with [`goatfiles/nu_scripts`]
+i'm not using the `main` revision of this package, rather the `nightly` branch...
+we can use `nupm install --revision` to make this happen!
+```nu
+nupm install https://github.com/goatfiles/nu_scripts --revision nightly
+```
+and then something like
+```nu
+nupm activate "nu-goat-scripts misc back"
+nupm activate "nu-goat-scripts misc edit"
+```
+
 ### an example of file package: the [`default_config.nu`] of Nushell
 in my config, i use the official default `$dark_theme` define in Nushell's `default_config.nu`
 - install it with `--file`
@@ -62,5 +74,6 @@ nupm activate --from-file ($nu.config-path | path dirname | path join "nupm" "ac
 ```
 
 [`nu-git-manager`]: https://github.com/amtoine/nu-git-manager
+[`goatfiles/nu_scripts`]: https://github.com/goatfiles/nu_scripts
 [`default_config.nu`]: https://github.com/nushell/nushell/blob/main/crates/nu-utils/src/sample_config/default_config.nu
 [goatfiles activations]: https://github.com/goatfiles/dotfiles/blob/nightly/.config/nushell/nupm/activations.nuon
