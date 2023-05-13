@@ -100,12 +100,14 @@ export def activate [
     let activations = ($load | open | lines)
 
     if $list {
-        return ($activations | parse 'use {activation}' | get activation)
+        return ($activations | parse '{mode} {activation}')
     }
 
     $activations | append (
         if $from_file != null {
-            open $from_file | each { "use " ++ $in }
+            open $from_file | each {|it|
+                $it.mode ++ " " ++ $it.activation
+            }
         } else if $source {
             $"source ($command | str join ' ')"
         } else {
