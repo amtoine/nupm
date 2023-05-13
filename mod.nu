@@ -59,7 +59,7 @@ def install-package [
 
     let out = (do -i {
         let repo = (nupm-home | path join "registry" $package.name)
-        log info $"intalling package ($project)"
+        log info $"intalling package ($project) as ($package.name)"
         git clone $url $repo
         log debug $"($project) installed in ($repo)"
         log debug $"($project) checking out on ($revision)"
