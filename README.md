@@ -16,6 +16,7 @@ to run the bootstrap script directly.
 3. add `source ~/.local/share/nupm/load.nu` to `config.nu`
 4. (optional) define `NUPM_HOME` in `env.nu` with `let-env NUPM_HOME = ($env.XDG_DATA_HOME | path join "nupm")`
 5. install packages
+6. activate items
 
 > **Note**  
 > in all the following, we assume `nupm` has been installed an loaded with `use nupm`
