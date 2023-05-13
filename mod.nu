@@ -84,3 +84,5 @@ export def activate [
         }
     ) | uniq | save --force $load
 }
+
+export def main [] { help nupm }
