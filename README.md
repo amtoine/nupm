@@ -6,61 +6,28 @@ A manager for Nushell packages.
 ```nu
 http get https://raw.githubusercontent.com/amtoine/nupm/main/bootstrap/bootstrap.nu | save --force ($nu.temp-path | path join "nupm-bootstrap"); nu ($nu.temp-path | path join "nupm-bootstrap")
 ```
-or
+to have a look at the bootstrap script (**HIGHLY RECOMMENDED IN ALL CASES**) or
 ```nu
 nu --commands (http get https://raw.githubusercontent.com/amtoine/nupm/main/bootstrap/bootstrap.nu)
 ```
-
-2. had to add the following manually to the files in the first comment
-```nuon
-# ~/.local/share/nupm/packages.nuon
-{
-    nushell: {
-       upstream: "https://github.com/nushell/nu_scripts.git"
-       directory: ["nushell" "nu_scripts"]
-       revision: "main"
-    }
-    goatfiles: {
-       upstream: "https://github.com/goatfiles/nu_scripts.git"
-       directory: ["goatfiles" "nu_scripts"]
-       revision: "nightly"
-    }
-    nu-git-manager: {
-       upstream: "https://github.com/amtoine/nu-git-manager.git"
-       directory: ["nu-git-manager"]
-       revision: "main"
-    }
-}
-```
-and
-```nu
-# ~/.local/share/nupm/load.nu
-use goatfiles/nu_scripts/scripts/misc.nu [
-    back
-    "cargo list"
-    "cargo info full"
-    edit
-    "youtube share"
-]
-
-use goatfiles/nu_scripts/scripts/gf.nu
-use goatfiles/nu_scripts/scripts/gpg.nu
-use goatfiles/nu_scripts/scripts/sys.nu
-use goatfiles/nu_scripts/scripts/downloads.nu
-use goatfiles/nu_scripts/scripts/ssh.nu
-use goatfiles/nu_scripts/scripts/trash.nu
-use goatfiles/nu_scripts/scripts/xdg.nu
-
-use nushell/nu_scripts/custom-completions/cargo/cargo-completions.nu *
-
-use nu-git-manager gm
-use nu-git-manager sugar git
-use nu-git-manager sugar gh
-use nu-git-manager sugar gist
-use nu-git-manager sugar completions git *
-use nu-git-manager sugar dotfiles
-```
+to run the bootstrap script directly.
+2. add `source ~/.local/share/nupm/env.nu` to `env.nu`
 3. add `source ~/.local/share/nupm/load.nu` to `config.nu`
-4. add `source ~/.local/share/nupm/env.nu` to `env.nu`
-5. (optional) define `NUPM_HOME` in `env.nu` with `let-env NUPM_HOME = ($env.XDG_DATA_HOME | path join "nupm")`
-6. install the packages with `use mod.nu` and then `mod update all`
+4. (optional) define `NUPM_HOME` in `env.nu` with `let-env NUPM_HOME = ($env.XDG_DATA_HOME | path join "nupm")`
+5. install packages
+
+### an example with [`nu-git-manager`]
+```nu
+use nupm
+nupm install https://github.com/amtoine/nu-git-manager.git
+```
+```nu
+nupm activate nu-git-manager gm
+nupm activate nu-git-manager sugar git
+nupm activate nu-git-manager sugar gh
+nupm activate nu-git-manager sugar gist
+nupm activate nu-git-manager sugar completions git *
+nupm activate nu-git-manager sugar dotfiles
+```
+
+[`nu-git-manager`]: https://github.com/amtoine/nu-git-manager
