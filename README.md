@@ -38,6 +38,7 @@ nupm activate nu-git-manager sugar dotfiles
 ```
 
 ### an example of file package: the [`default_config.nu`] of Nushell
+in my config, i use the official default `$dark_theme` define in Nushell's `default_config.nu`
 - install it with `--file`
 ```nu
 nupm install --file https://raw.githubusercontent.com/nushell/nushell/main/crates/nu-utils/src/sample_config/default_config.nu
