@@ -6,7 +6,10 @@ def nupm-home [] {
     )
 }
 
-def install-package [url: string] {
+def install-package [
+    url: string
+    span: record<start: int, end: int>
+] {
     let project = (
         $url
         | str replace '\.git$' ''
@@ -20,7 +23,18 @@ def install-package [url: string] {
 
     let project = ($project | get 0.project)
 
-    let package = (http get $"https://raw.githubusercontent.com/($project)/main/package.nuon")
+    let package = (try {
+        http get $"https://raw.githubusercontent.com/($project)/main/package.nuon"
+    } catch {
+        error make {
+            msg: $"(ansi red_bold)nupm::invalid_package(ansi reset)"
+            label: {
+                text: $"($project) does not have a `package.nuon` file..."
+                start: $span.start
+                end: $span.end
+            }
+        }
+    })
     git clone $url (nupm-home | path join "registry" $package.name)
 
     return $package
@@ -45,7 +59,8 @@ export def install [
         | append (
             open $file | transpose name url | each {|package|
                 print $"installing ($package.name)"
-                let _ = (install-package $package.url)
+                let span = (metadata $file | get span)
+                let _ = (install-package $package.url $span)
                 {$package.name: $package.url}
             }
         ) | save --force $packages
@@ -56,7 +71,8 @@ export def install [
         error make --unspanned {msg: "`nupm install` takes a positional URL argument."}
     }
 
-    let package = (install-package $url)
+    let span = (metadata $url | get span)
+    let package = (install-package $url $span)
 
     if ($packages | path exists) { $packages | open } else []
     | append {$package.name: $url}
