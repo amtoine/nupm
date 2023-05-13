@@ -1,0 +1,11 @@
+{
+    name: "nupm"
+    version: 0.1.0
+    description: "A manager for Nushell packages."
+    documentation: "https://github.com/amtoine/nupm/blob/main/README.md"
+    maintainers: [@amtoine]
+    license: "https://github.com/amtoine/nupm/blob/main/LICENSE"
+    dependencies: {
+        nushell: {revision: a2a346e39, mode: "at-least"}
+    }
+}
