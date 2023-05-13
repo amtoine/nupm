@@ -36,6 +36,16 @@ nupm activate nu-git-manager sugar gist
 nupm activate nu-git-manager sugar completions git *
 nupm activate nu-git-manager sugar dotfiles
 ```
+or, as i have these [activations exported][goatfiles activations] with
+```nu
+nupm activate --list
+| to nuon -i 4
+| save --force ($nu.config-path | path dirname | path join "nupm" "activations.nuon")
+```
+i can run a simpler
+```nu
+nupm activate --from-file ($nu.config-path | path dirname | path join "nupm" "activations.nuon")
+```
 
 ### an example of file package: the [`default_config.nu`] of Nushell
 in my config, i use the official default `$dark_theme` define in Nushell's `default_config.nu`
@@ -50,3 +60,4 @@ nupm activate --source default_config.nu
 
 [`nu-git-manager`]: https://github.com/amtoine/nu-git-manager
 [`default_config.nu`]: https://github.com/nushell/nushell/blob/main/crates/nu-utils/src/sample_config/default_config.nu
+[goatfiles activations]: https://github.com/goatfiles/dotfiles/blob/nightly/.config/nushell/nupm/activations.nuon
