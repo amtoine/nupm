@@ -17,7 +17,7 @@ to run the bootstrap script directly.
 4. (optional) define `NUPM_HOME` in `env.nu` with `let-env NUPM_HOME = ($env.XDG_DATA_HOME | path join "nupm")`
 5. install packages
 
-> **Note**
+> **Note**  
 > in all the following, we assume `nupm` has been installed an loaded with `use nupm`
 
 ## install packages
