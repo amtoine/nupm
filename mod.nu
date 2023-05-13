@@ -53,34 +53,23 @@ def install-package [
     }
 
     print $out.stdout
-
-    return $package
 }
 
 export def install [
     url?: string
     --list: bool
     --from-file: path
+    --file: bool
 ] {
-    let packages = (nupm-home | path join "packages.nuon")
-
     if $list {
-        if ($packages | path exists) {
-            return ($packages | open)
-        }
-        error make --unspanned {msg: "there are no packages installed with `nupm`."}
+        error make --unspanned {msg: "`--list` not supported at the time."}
     }
 
     if $from_file != null {
-        if ($packages | path exists) { $packages | open } else []
-        | append (
-            open $from_file | transpose name url | each {|package|
-                print $"installing ($package.name)"
-                let span = (metadata $from_file | get span)
-                let _ = (install-package $package.url $span)
-                {$package.name: $package.url}
-            }
-        ) | save --force $packages
+        open $from_file | transpose name url | each {|package|
+            print $"installing ($package.name)"
+            install-package $package.url (metadata $from_file | get span) | ignore
+        }
         return
     }
 
@@ -88,12 +77,7 @@ export def install [
         error make --unspanned {msg: "`nupm install` takes a positional URL argument."}
     }
 
-    let span = (metadata $url | get span)
-    let package = (install-package $url $span)
-
-    if ($packages | path exists) { $packages | open } else []
-    | append {$package.name: $url}
-    | save --force $packages
+    install-package $url (metadata $url | get span)
 }
 
 export def activate [
