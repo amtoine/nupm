@@ -11,6 +11,7 @@ to have a look at the bootstrap script (**HIGHLY RECOMMENDED IN ALL CASES**) or
 nu --commands (http get https://raw.githubusercontent.com/amtoine/nupm/main/bootstrap/bootstrap.nu)
 ```
 to run the bootstrap script directly.
+
 2. add `source ~/.local/share/nupm/env.nu` to `env.nu`
 3. add `source ~/.local/share/nupm/load.nu` to `config.nu`
 4. (optional) define `NUPM_HOME` in `env.nu` with `let-env NUPM_HOME = ($env.XDG_DATA_HOME | path join "nupm")`
