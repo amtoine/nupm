@@ -52,6 +52,8 @@ def install-package [
         }
     }
 
+    print $out.stdout
+
     return $package
 }
 
