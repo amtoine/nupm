@@ -121,6 +121,7 @@ export def update [
 ] {
     if $self {
         git -C (nupm-home | path join "nupm") pull origin main
+        return
     }
 
     error make --unspanned {msg: "`nupm update` not implemented."}
