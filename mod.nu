@@ -6,12 +6,11 @@ def nupm-home [] {
     )
 }
 
-def install-package [
-    url: string
+def parse-project [
     span: record<start: int, end: int>
 ] {
     let project = (
-        $url
+        $in
         | str replace '\.git$' ''
         | str replace '^https://' ''
         | str replace '^http://' ''
@@ -28,7 +27,14 @@ def install-package [
         }
     }
 
-    let project = ($project | get 0.project)
+    $project | get 0.project
+}
+
+def install-package [
+    url: string
+    span: record<start: int, end: int>
+] {
+    let project = ($url | parse-project $span)
 
     let package = (try {
         http get $"https://raw.githubusercontent.com/($project)/main/package.nuon"
@@ -51,8 +57,6 @@ def install-package [
             msg: $out.stderr
         }
     }
-
-    print $out.stdout
 }
 
 export def install [
