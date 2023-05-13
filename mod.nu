@@ -18,7 +18,14 @@ def install-package [
         | parse "github.com/{project}"
     )
     if ($project | is-empty) {
-        error make --unspanned {msg: "not a valid project"}
+        error make {
+            msg: $"(ansi red_bold)nupm::invalid_project_name(ansi reset)"
+            label: {
+                text: $"not a valid project URL"
+                start: $span.start
+                end: $span.end
+            }
+        }
     }
 
     let project = ($project | get 0.project)
@@ -27,9 +34,9 @@ def install-package [
         http get $"https://raw.githubusercontent.com/($project)/main/package.nuon"
     } catch {
         error make {
-            msg: $"(ansi red_bold)nupm::invalid_package(ansi reset)"
+            msg: $"(ansi red_bold)nupm::not_a_package(ansi reset)"
             label: {
-                text: $"($project) does not have a `package.nuon` file..."
+                text: $"($project) does not have a `package.nuon` file"
                 start: $span.start
                 end: $span.end
             }
