@@ -7,8 +7,22 @@ def nupm-home [] {
 }
 
 export def install [
-    url: string
+    url?: string
+    --list: bool
 ] {
+    let packages = (nupm-home | path join "packages.nuon")
+
+    if $list {
+        if ($packages | path exists) {
+            return ($packages | open)
+        }
+        error make --unspanned {msg: "there are no packages installed with `nupm`."}
+    }
+
+    if $url == null {
+        error make --unspanned {msg: "`nupm install` takes a positional URL argument."}
+    }
+
     let project = (
         $url
         | str replace '\.git$' ''
@@ -25,7 +39,6 @@ export def install [
     let package = (http get $"https://raw.githubusercontent.com/($project)/main/package.nuon")
     git clone $url (nupm-home | path join "registry" $package.name)
 
-    let packages = (nupm-home | path join "packages.nuon")
     if ($packages | path exists) { $packages | open } else []
     | append {$package.name: $url}
     | save --force $packages
@@ -33,8 +46,15 @@ export def install [
 
 export def activate [
     ...command: string
+    --list: bool
 ] {
     let load = (nupm-home | path join "load.nu")
 
-    $load | open | lines | append $"use ($command | str join ' ')" | uniq | save --force $load
+    let activations = ($load | open | lines)
+
+    if $list {
+        return ($activations | parse 'use {activation}' | get activation)
+    }
+
+    $activations | append $"use ($command | str join ' ')" | uniq | save --force $load
 }
