@@ -42,7 +42,15 @@ def install-package [
             }
         }
     })
-    git clone $url (nupm-home | path join "registry" $package.name)
+
+    let out = (do -i {
+        git clone $url (nupm-home | path join "registry" $package.name)
+    } | complete)
+    if $out.exit_code != 0 {
+        error make --unspanned {
+            msg: $out.stderr
+        }
+    }
 
     return $package
 }
