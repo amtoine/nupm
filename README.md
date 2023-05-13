@@ -73,6 +73,12 @@ i can run a simpler
 nupm activate --from-file ($nu.config-path | path dirname | path join "nupm" "activations.nuon")
 ```
 
+## update `nupm`
+one can use the following to update the package manager
+```nu
+nupm update --self
+```
+
 [`nu-git-manager`]: https://github.com/amtoine/nu-git-manager
 [`goatfiles/nu_scripts`]: https://github.com/goatfiles/nu_scripts
 [`default_config.nu`]: https://github.com/nushell/nushell/blob/main/crates/nu-utils/src/sample_config/default_config.nu
