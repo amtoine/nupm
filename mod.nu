@@ -116,4 +116,14 @@ export def activate [
     ) | uniq | save --force $load
 }
 
+export def update [
+    --self: bool
+] {
+    if $self {
+        git -C (nupm-home | path join "nupm") pull origin main
+    }
+
+    error make --unspanned {msg: "`nupm update` not implemented."}
+}
+
 export def main [] { help nupm }
