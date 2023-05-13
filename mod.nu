@@ -1,3 +1,8 @@
+use std [
+    "log info"
+    "log debug"
+]
+
 def nupm-home [] {
     $env.NUPM_HOME? | default (
         $env.XDG_DATA_HOME?
@@ -37,6 +42,7 @@ def install-package [
 ] {
     let project = ($url | parse-project $span)
 
+    log debug $"checking package ($project)"
     let package = (try {
         http get $"https://raw.githubusercontent.com/($project)/($revision)/package.nuon"
     } catch {
@@ -49,10 +55,14 @@ def install-package [
             }
         }
     })
+    log info "package ok"
 
     let out = (do -i {
         let repo = (nupm-home | path join "registry" $package.name)
+        log info $"intalling package ($project)"
         git clone $url $repo
+        log debug $"($project) installed in ($repo)"
+        log debug $"($project) checking out on ($revision)"
         git -C $repo checkout $revision
     } | complete)
     if $out.exit_code != 0 {
@@ -86,7 +96,10 @@ export def install [
     }
 
     if $file {
-        http get $url | save --force (nupm-home | path join "registry" ($url | path basename))
+        log info $"installing file: ($url | path basename)"
+        let local_file = (nupm-home | path join "registry" ($url | path basename))
+        http get $url | save --force $local_file
+        log debug $"($url | path basename) installed in ($local_file)"
         return
     }
 
@@ -109,13 +122,18 @@ export def activate [
 
     $activations | append (
         if $from_file != null {
+            log info $"activating from file ($from_file)"
             open $from_file | each {|it|
                 $it.mode ++ " " ++ $it.activation
             }
         } else if $source {
-            $"source ($command | str join ' ')"
+            let item = ($command | str join ' ')
+            log info $"`source`ing `($item)`"
+            $"source ($item)"
         } else {
-            $"use ($command | str join ' ')"
+            let item = ($command | str join ' ')
+            log info $"`use`ing `($item)`"
+            $"use ($item)"
         }
     ) | uniq | save --force $load
 }
@@ -124,7 +142,10 @@ export def update [
     --self: bool
 ] {
     if $self {
-        git -C (nupm-home | path join "nupm") pull origin main
+        log info "updating nupm..."
+        let nupm = (nupm-home | path join "nupm")
+        git -C $nupm pull origin main
+        log debug $"($nupm) up-to-date"
         return
     }
 
