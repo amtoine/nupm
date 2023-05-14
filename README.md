@@ -69,6 +69,12 @@ one can use the following to update the package manager
 nupm update --self
 ```
 
+> **Note**  
+> `nupm update --self` will automagically reload itself after the update,
+> no need to run `use nupm/`! :partying_face:
+>
+> try `nupm version` before and after an `update --self`... :smirk:
+
 [`nu-git-manager`]: https://github.com/amtoine/nu-git-manager
 [`goatfiles/nu_scripts`]: https://github.com/goatfiles/nu_scripts
 [`default_config.nu`]: https://github.com/nushell/nushell/blob/main/crates/nu-utils/src/sample_config/default_config.nu
