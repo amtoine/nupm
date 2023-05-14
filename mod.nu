@@ -264,5 +264,13 @@ export def update [
     error make --unspanned {msg: "`nupm update` not implemented."}
 }
 
+# print the version and exit
+export def version [] {
+    let repo = (nupm-home | path join "nupm")
+
+    $"($repo | get-revision) (char lparen)(git -C $repo rev-parse --short HEAD)(char rparen)"
+
+}
+
 # a manager for Nushell packages
 export def main [] { help nupm }
