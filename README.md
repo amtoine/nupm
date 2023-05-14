@@ -19,7 +19,7 @@ to run the bootstrap script directly.
 6. activate items
 
 > **Note**  
-> in all the following, we assume `nupm` has been installed an loaded with `use nupm`
+> in all the following, we assume `nupm` has been installed and loaded with `use nupm`
 
 ## :gear: install packages
 ### an example with [`nu-git-manager`]
