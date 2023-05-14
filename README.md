@@ -33,8 +33,8 @@ nupm install https://github.com/goatfiles/nu_scripts --revision nightly
 ```
 and then something like
 ```nu
-nupm activate "nu-goat-scripts misc back"
-nupm activate "nu-goat-scripts misc edit"
+nupm activate nu-goat-scripts misc back    # module import syntax
+nupm activate "nu-goat-scripts misc edit"  # single-block syntax
 ```
 
 #### :bulb: an example of file package: the [`default_config.nu`] of Nushell
