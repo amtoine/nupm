@@ -72,6 +72,39 @@ def install-package [
     }
 }
 
+def install-file [
+    file: record<repo: string, path: string>
+    span: record<start: int, end: int>
+    revision: string
+] {
+    let url = ([
+        "https://raw.githubusercontent.com/"
+        $file.repo
+        $revision
+        $file.path
+    ] | str join "/")
+    let local_file = (nupm-home | path join "registry" ($url | path basename))
+
+    log info $"installing file: ($url | path basename)"
+    try {
+        http get $url | save --force $local_file
+        $revision | save --force (nupm-home | path join "registry" ".files" ($url | path basename))
+    } catch {
+        error make {
+            msg: $"(ansi red_bold)nupm::file_not_found(ansi reset)"
+            label: {
+                text: ([
+                    "could not pull this file down..."
+                    $"($url)"
+                ] | str join "\n")
+                start: $span.start
+                end: $span.end
+            }
+        }
+    }
+    log debug $"($url | path basename) installed in ($local_file)"
+}
+
 # install a package locally
 #
 # `nupm install` will look for a repository with a `package.nuon` file at
@@ -102,33 +135,7 @@ export def install [
     if $file != null {
         mkdir (nupm-home | path join "registry" ".files")
 
-        let url = ([
-            "https://raw.githubusercontent.com/"
-            $file.repo
-            $revision
-            $file.path
-        ] | str join "/")
-        let local_file = (nupm-home | path join "registry" ($url | path basename))
-
-        log info $"installing file: ($url | path basename)"
-        try {
-            http get $url | save --force $local_file
-            $revision | save --force (nupm-home | path join "registry" ".files" ($url | path basename))
-        } catch {
-            let span = (metadata $file | get span)
-            error make {
-                msg: $"(ansi red_bold)nupm::file_not_found(ansi reset)"
-                label: {
-                    text: ([
-                        "could not pull this file down..."
-                        $"($url)"
-                    ] | str join "\n")
-                    start: $span.start
-                    end: $span.end
-                }
-            }
-        }
-        log debug $"($url | path basename) installed in ($local_file)"
+        install-file $file (metadata $file | get span) $revision
         return
     }
 
