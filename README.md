@@ -22,10 +22,10 @@ to run the bootstrap script directly.
 > in all the following, we assume `nupm` has been installed and loaded with `use nupm`
 
 ## :gear: install packages
-### an example with [`nu-git-manager`]
+#### :bulb: an example with [`nu-git-manager`]
 please find intructions [here](https://github.com/amtoine/nu-git-manager/blob/main/docs/installation/nupm.md)
 
-### another example with [`goatfiles/nu_scripts`]
+#### :bulb: another example with [`goatfiles/nu_scripts`]
 i'm not using the `main` revision of this package, rather the `nightly` branch...
 we can use `nupm install --revision` to make this happen!
 ```nu
@@ -37,7 +37,7 @@ nupm activate "nu-goat-scripts misc back"
 nupm activate "nu-goat-scripts misc edit"
 ```
 
-### an example of file package: the [`default_config.nu`] of Nushell
+#### :bulb: an example of file package: the [`default_config.nu`] of Nushell
 in my config, i use the official default `$dark_theme` define in Nushell's `default_config.nu`
 - install it with `--file`
 ```nu
