@@ -82,7 +82,7 @@ export def install [
     url?: string  # the remote path to the package
     --list: bool  # list the installed packages and exit
     --from-file: path  # install packages from a file
-    --file: bool  # install a package as a file-package
+    --file: record<repo: string, path: string>  # install a package as a file-package
     --revision: string = "main"  # specify a precise revision for a package
 ] {
     if $list {
@@ -99,16 +99,41 @@ export def install [
         return
     }
 
-    if $url == null {
-        error make --unspanned {msg: "`nupm install` takes a positional URL argument."}
-    }
+    if $file != null {
+        mkdir (nupm-home | path join "registry" ".files")
 
-    if $file {
-        log info $"installing file: ($url | path basename)"
+        let url = ([
+            "https://raw.githubusercontent.com/"
+            $file.repo
+            $revision
+            $file.path
+        ] | str join "/")
         let local_file = (nupm-home | path join "registry" ($url | path basename))
-        http get $url | save --force $local_file
+
+        log info $"installing file: ($url | path basename)"
+        try {
+            http get $url | save --force $local_file
+            $revision | save --force (nupm-home | path join "registry" ".files" ($url | path basename))
+        } catch {
+            let span = (metadata $file | get span)
+            error make {
+                msg: $"(ansi red_bold)nupm::file_not_found(ansi reset)"
+                label: {
+                    text: ([
+                        "could not pull this file down..."
+                        $"($url)"
+                    ] | str join "\n")
+                    start: $span.start
+                    end: $span.end
+                }
+            }
+        }
         log debug $"($url | path basename) installed in ($local_file)"
         return
+    }
+
+    if $url == null {
+        error make --unspanned {msg: "`nupm install` takes a positional URL argument."}
     }
 
     install-package $url (metadata $url | get span) $revision
