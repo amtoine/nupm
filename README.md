@@ -23,20 +23,7 @@ to run the bootstrap script directly.
 
 ## :gear: install packages
 ### an example with [`nu-git-manager`]
-i use the `nu-git-manager` tool to manage all my `git` projects
-- install with
-```nu
-nupm install https://github.com/amtoine/nu-git-manager.git
-```
-- activate commands with
-```nu
-nupm activate nu-git-manager gm
-nupm activate nu-git-manager sugar git
-nupm activate nu-git-manager sugar gh
-nupm activate nu-git-manager sugar gist
-nupm activate nu-git-manager sugar completions git *
-nupm activate nu-git-manager sugar dotfiles
-```
+please find intructions [here](https://github.com/amtoine/nu-git-manager/blob/main/docs/installation/nupm.md)
 
 ### another example with [`goatfiles/nu_scripts`]
 i'm not using the `main` revision of this package, rather the `nightly` branch...
