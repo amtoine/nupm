@@ -88,7 +88,13 @@ def install-file [
     log info $"installing file: ($url | path basename)"
     try {
         http get $url | save --force $local_file
-        $revision | save --force (nupm-home | path join "registry" ".files" ($url | path basename))
+        {
+            repo: $file.repo
+            revision: $revision
+            path: $file.path
+        }
+        | to nuon
+        | save --force (nupm-home | path join "registry" ".files" ($url | path basename))
     } catch {
         error make {
             msg: $"(ansi red_bold)nupm::file_not_found(ansi reset)"
