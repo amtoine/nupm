@@ -1,7 +1,7 @@
 # nupm
 A manager for Nushell packages.
 
-## installation
+## :recycle: installation
 1. run
 ```nu
 http get https://raw.githubusercontent.com/amtoine/nupm/main/bootstrap/bootstrap.nu | save --force ($nu.temp-path | path join "nupm-bootstrap"); nu ($nu.temp-path | path join "nupm-bootstrap")
@@ -21,7 +21,7 @@ to run the bootstrap script directly.
 > **Note**  
 > in all the following, we assume `nupm` has been installed an loaded with `use nupm`
 
-## install packages
+## :gear: install packages
 ### an example with [`nu-git-manager`]
 i use the `nu-git-manager` tool to manage all my `git` projects
 - install with
@@ -61,7 +61,7 @@ nupm install --file https://raw.githubusercontent.com/nushell/nushell/main/crate
 nupm activate --source default_config.nu
 ```
 
-## use files
+## :open_file_folder: use files
 as i have the [activations above exported][goatfiles activations] with
 ```nu
 nupm activate --list
@@ -73,7 +73,7 @@ i can run a simpler
 nupm activate --from-file ($nu.config-path | path dirname | path join "nupm" "activations.nuon")
 ```
 
-## update `nupm`
+## :recycle: update `nupm`
 one can use the following to update the package manager
 ```nu
 nupm update --self
