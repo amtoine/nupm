@@ -41,7 +41,10 @@ nupm activate "nu-goat-scripts misc edit"  # single-block syntax
 in my config, i use the official default `$dark_theme` define in Nushell's `default_config.nu`
 - install it with `--file`
 ```nu
-nupm install --file https://raw.githubusercontent.com/nushell/nushell/main/crates/nu-utils/src/sample_config/default_config.nu
+nupm install --file {
+    repo: nushell/nushell
+    path: crates/nu-utils/src/sample_config/default_config.nu
+} --revision main
 ```
 - activate it with `--source`
 ```nu
