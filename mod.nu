@@ -163,7 +163,7 @@ export def activate [
     let activations = ($load | open | lines)
 
     if $list {
-        return ($activations | parse '{mode} {activation}')
+        return ($activations | parse '{mode} {activation}' | sort)
     }
 
     $activations | append (
