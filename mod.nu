@@ -111,6 +111,33 @@ def install-file [
     log debug $"($url | path basename) installed in ($local_file)"
 }
 
+def "open file-package" [] {
+    let $file = $in
+    nupm-home | path join "registry" ".files" $file | open | from nuon
+}
+
+def get-revision [] {
+    let repo = $in
+
+    let tag = (do -i {
+        git -C $repo describe HEAD --tags
+    } | complete)
+    let is_tag = $tag.exit_code == 0 and (
+        $tag.stdout | str trim
+        | parse --regex '(?<tag>.*)-(?<n>\d+)-(?<hash>[0-9a-fg]+)'
+        | is-empty
+    )
+    let branch = (git -C $repo branch --show-current | str trim)
+
+    if $is_tag {
+        $tag.stdout | str trim
+    } else if not ($branch | is-empty) {
+        $branch
+    } else {
+        git -C $repo rev-parse HEAD | str trim
+    }
+}
+
 # install a package locally
 #
 # `nupm install` will look for a repository with a `package.nuon` file at
@@ -125,7 +152,37 @@ export def install [
     --revision: string = "main"  # specify a precise revision for a package
 ] {
     if $list {
-        error make --unspanned {msg: "`--list` not supported at the time."}
+        return (
+            ls (nupm-home | path join "registry") | each {|it|
+                let url = if $it.type == dir {
+                    git -C $it.name remote -v
+                    | detect columns --no-headers
+                    | where column0 == "origin"
+                    | get 0.column1
+                } else if $it.type == file {
+                    let package = ($it.name | path basename | open file-package)
+
+                    [
+                        "https://raw.githubusercontent.com"
+                        $package.repo
+                        $package.revision
+                        $package.path
+                    ] | str join "/"
+                }
+
+                let revision = if $it.type == dir {
+                    $it.name | get-revision
+                } else if $it.type == file {
+                    $it.name | path basename | open file-package | get revision
+                }
+
+                {
+                    name: ($it.name | path basename)
+                    revision: $revision
+                    url: $url
+                }
+            }
+        )
     }
 
     if $from_file != null {
