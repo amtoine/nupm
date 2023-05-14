@@ -256,7 +256,9 @@ export def update [
         let nupm = (nupm-home | path join "nupm")
         git -C $nupm pull origin main
         log debug $"($nupm) up-to-date"
-        return
+
+        log info "loading new nupm!"
+        exec nu -e 'use nupm/'
     }
 
     error make --unspanned {msg: "`nupm update` not implemented."}
