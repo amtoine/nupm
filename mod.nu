@@ -90,6 +90,8 @@ export def install [
     }
 
     if $from_file != null {
+        error make --unspanned {msg: "installation from file not permitted for now!"}
+
         open $from_file | transpose name url | each {|package|
             print $"installing ($package.name)"
             install-package $package.url (metadata $from_file | get span) $revision | ignore
