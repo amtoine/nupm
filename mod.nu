@@ -72,12 +72,18 @@ def install-package [
     }
 }
 
+# install a package locally
+#
+# `nupm install` will look for a repository with a `package.nuon` file at
+# its root.
+#
+# `nupm` only supports packages hosted on *GitHub* for now...
 export def install [
-    url?: string
-    --list: bool
-    --from-file: path
-    --file: bool
-    --revision: string = "main"
+    url?: string  # the remote path to the package
+    --list: bool  # list the installed packages and exit
+    --from-file: path  # install packages from a file
+    --file: bool  # install a package as a file-package
+    --revision: string = "main"  # specify a precise revision for a package
 ] {
     if $list {
         error make --unspanned {msg: "`--list` not supported at the time."}
@@ -106,11 +112,17 @@ export def install [
     install-package $url (metadata $url | get span) $revision
 }
 
+# activate package items
+#
+# once a package has been installed, its items must be activated to be used
+# automatically when starting a Nushell instance.
+#
+# the default activation mode is with `use`.
 export def activate [
-    ...command: string
-    --list: bool
-    --from-file: path
-    --source: bool
+    ...item: string  # the item to activate from a package, e.g. `nu-git-manager gm`
+    --list: bool  # list the activations and exit
+    --from-file: path  # load activations from file
+    --source: bool  # activate an item in `source` mode
 ] {
     let load = (nupm-home | path join "load.nu")
 
@@ -127,19 +139,20 @@ export def activate [
                 $it.mode ++ " " ++ $it.activation
             }
         } else if $source {
-            let item = ($command | str join ' ')
+            let item = ($item | str join ' ')
             log info $"`source`ing `($item)`"
             $"source ($item)"
         } else {
-            let item = ($command | str join ' ')
+            let item = ($item| str join ' ')
             log info $"`use`ing `($item)`"
             $"use ($item)"
         }
     ) | uniq | save --force $load
 }
 
+# update a package or the package manager itself
 export def update [
-    --self: bool
+    --self: bool  # perform an update of `nupm` itself
 ] {
     if $self {
         log info "updating nupm..."
@@ -152,4 +165,5 @@ export def update [
     error make --unspanned {msg: "`nupm update` not implemented."}
 }
 
+# a manager for Nushell packages
 export def main [] { help nupm }
