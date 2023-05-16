@@ -157,36 +157,29 @@ export def install [
 #
 # once a package has been installed, its items must be activated to be used
 # automatically when starting a Nushell instance.
-#
-# the default activation mode is with `use`.
 export def activate [
     ...item: string  # the item to activate from a package, e.g. `nu-git-manager gm`
     --list: bool  # list the activations and exit
     --from-file: path  # load activations from file
-    --source: bool  # activate an item in `source` mode
 ] {
     let load = (nupm-home | path join "nupm.nu")
 
     let activations = ($load | open | lines)
 
     if $list {
-        return ($activations | parse '{mode} {activation}' | sort)
+        return ($activations | str replace '^export use ' '' | sort)
     }
 
     $activations | append (
         if $from_file != null {
             log info $"activating from file ($from_file)"
             open $from_file | each {|it|
-                $it.mode ++ " " ++ $it.activation
+                "export use " ++ $it
             }
-        } else if $source {
-            let item = ($item | str join ' ')
-            log info $"`source`ing `($item)`"
-            $"source ($item)"
         } else {
             let item = ($item| str join ' ')
             log info $"`use`ing `($item)`"
-            $"use ($item)"
+            $"export use ($item)"
         }
     ) | uniq | save --force $load
 }
