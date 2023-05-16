@@ -225,7 +225,7 @@ export def activate [
     --from-file: path  # load activations from file
     --source: bool  # activate an item in `source` mode
 ] {
-    let load = (nupm-home | path join "load.nu")
+    let load = (nupm-home | path join "nupm.nu")
 
     let activations = ($load | open | lines)
 

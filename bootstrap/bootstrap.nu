@@ -21,22 +21,7 @@ def install-nupm [directory: string] {
 def main [] {
     mkdir (nupm-home)
 
-    [
-        'export-env {'
-        '    let nupm_home = ($env.NUPM_HOME? | default ('
-        '        $env.XDG_DATA_HOME?'
-        '        | default ($nu.home-path | path join ".local" "share")'
-        '        | path join "nupm"'
-        '    ))'
-        ''
-        '    let-env NU_LIB_DIRS = ($env.NU_LIB_DIRS? | default [] | append ['
-        '        $nupm_home'
-        '        ($nupm_home | path join "registry")'
-        '    ])'
-        '}'
-    ] | dump to "env.nu"
-
-    [''] | dump to "load.nu"
+    [''] | dump to "nupm.nu"
 
     install-nupm "nupm/"
 }
