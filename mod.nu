@@ -62,7 +62,7 @@ def install-package [
     log info "package ok"
 
     let out = (do -i {
-        let repo = (nupm-home | path join "registry" $package.name)
+        let repo = (nupm-home | path join $package.name)
         log info $"intalling package ($project) as ($package.name)"
         git clone $url $repo
         log debug $"($project) installed in ($repo)"
@@ -87,7 +87,7 @@ def install-file [
         $revision
         $file.path
     ] | str join "/")
-    let local_file = (nupm-home | path join "registry" ($url | path basename))
+    let local_file = (nupm-home | path join ($url | path basename))
 
     log info $"installing file: ($url | path basename)"
     try {
@@ -98,7 +98,7 @@ def install-file [
             path: $file.path
         }
         | to nuon
-        | save --force (nupm-home | path join "registry" ".files" ($url | path basename))
+        | save --force (nupm-home | path join ".files" ($url | path basename))
     } catch {
         error make {
             msg: $"(ansi red_bold)nupm::file_not_found(ansi reset)"
@@ -117,7 +117,7 @@ def install-file [
 
 def "open file-package" [] {
     let $file = $in
-    nupm-home | path join "registry" ".files" $file | open | from nuon
+    nupm-home | path join ".files" $file | open | from nuon
 }
 
 def get-revision [] {
@@ -157,7 +157,7 @@ export def install [
 ] {
     if $list {
         return (
-            ls (nupm-home | path join "registry") | each {|it|
+            ls (nupm-home) | each {|it|
                 let url = if $it.type == dir {
                     git -C $it.name remote -v
                     | detect columns --no-headers
@@ -200,7 +200,7 @@ export def install [
     }
 
     if $file != null {
-        mkdir (nupm-home | path join "registry" ".files")
+        mkdir (nupm-home | path join ".files")
 
         install-file $file (metadata $file | get span) $revision
         return
