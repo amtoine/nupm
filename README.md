@@ -12,11 +12,19 @@ nu --commands (http get https://raw.githubusercontent.com/amtoine/nupm/main/boot
 ```
 to run the bootstrap script directly.
 
-2. add `source ~/.local/share/nupm/env.nu` to `env.nu`
-3. add `source ~/.local/share/nupm/load.nu` to `config.nu`
-4. (optional) define `NUPM_HOME` in `env.nu` with `let-env NUPM_HOME = ($env.XDG_DATA_HOME | path join "nupm")`
-5. install packages
-6. activate items
+2. add
+```nu
+export-env {
+    let-env NUPM_HOME = ...
+    let-env NU_LIB_DIRS = ($env.NU_LIB_DIRS? | default [] | append [
+        $env.NUPM_HOME
+    ])
+}
+```
+to `env.nu`
+3. add `use nupm.nu *` or `overlay use nupm.nu as nupm-activations` to `config.nu`
+4. install packages
+5. activate items
 
 > **Note**  
 > in all the following, we assume `nupm` has been installed and loaded with `use nupm`
