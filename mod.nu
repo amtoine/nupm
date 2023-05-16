@@ -3,6 +3,10 @@ use std [
     "log debug"
 ]
 
+export-env {
+    let-env PROMPT_COMMAND_RIGHT = "(nupm)"
+}
+
 def nupm-home [] {
     $env.NUPM_HOME? | default (
         $env.XDG_DATA_HOME?
