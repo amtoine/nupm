@@ -22,6 +22,7 @@ export-env {
 }
 ```
 to `env.nu`
+
 3. add `use nupm.nu *` or `overlay use nupm.nu as nupm-activations` to `config.nu`
 4. install packages
 5. activate items
@@ -45,20 +46,6 @@ nupm activate nu-goat-scripts misc back    # module import syntax
 nupm activate "nu-goat-scripts misc edit"  # single-block syntax
 ```
 
-#### :bulb: an example of file package: the [`default_config.nu`] of Nushell
-in my config, i use the official default `$dark_theme` define in Nushell's `default_config.nu`
-- install it with `--file`
-```nu
-nupm install --file {
-    repo: nushell/nushell
-    path: crates/nu-utils/src/sample_config/default_config.nu
-} --revision main
-```
-- activate it with `--source`
-```nu
-nupm activate --source default_config.nu
-```
-
 ## :open_file_folder: use files
 as i have the [activations above exported][goatfiles activations] with
 ```nu
@@ -69,6 +56,13 @@ nupm activate --list
 i can run a simpler
 ```nu
 nupm activate --from-file ($nu.config-path | path dirname | path join "nupm" "activations.nuon")
+```
+
+one can also export the [packages installed][goatfiles packages] with
+```nu
+nupm install --list
+| to nuon -i 4
+| save --force ($nu.config-path | path dirname | path join "nupm" "packages.nuon")
 ```
 
 ## :recycle: update `nupm`
@@ -86,3 +80,4 @@ nupm update --self
 [`goatfiles/nu_scripts`]: https://github.com/goatfiles/nu_scripts
 [`default_config.nu`]: https://github.com/nushell/nushell/blob/main/crates/nu-utils/src/sample_config/default_config.nu
 [goatfiles activations]: https://github.com/goatfiles/dotfiles/blob/nightly/.config/nushell/nupm/activations.nuon
+[goatfiles packages]: https://github.com/goatfiles/dotfiles/blob/nightly/.config/nushell/nupm/packages.nuon
