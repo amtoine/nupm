@@ -76,45 +76,6 @@ def install-package [
     }
 }
 
-def install-file [
-    file: record<repo: string, path: string>
-    span: record<start: int, end: int>
-    revision: string
-] {
-    let url = ([
-        "https://raw.githubusercontent.com/"
-        $file.repo
-        $revision
-        $file.path
-    ] | str join "/")
-    let local_file = (nupm-home | path join ($url | path basename))
-
-    log info $"installing file: ($url | path basename)"
-    try {
-        http get $url | save --force $local_file
-        {
-            repo: $file.repo
-            revision: $revision
-            path: $file.path
-        }
-        | to nuon
-        | save --force (nupm-home | path join ".files" ($url | path basename))
-    } catch {
-        error make {
-            msg: $"(ansi red_bold)nupm::file_not_found(ansi reset)"
-            label: {
-                text: ([
-                    "could not pull this file down..."
-                    $"($url)"
-                ] | str join "\n")
-                start: $span.start
-                end: $span.end
-            }
-        }
-    }
-    log debug $"($url | path basename) installed in ($local_file)"
-}
-
 def "open file-package" [] {
     let $file = $in
     nupm-home | path join ".files" $file | open | from nuon
@@ -152,33 +113,19 @@ export def install [
     url?: string  # the remote path to the package
     --list: bool  # list the installed packages and exit
     --from-file: path  # install packages from a file
-    --file: record<repo: string, path: string>  # install a package as a file-package
     --revision: string = "main"  # specify a precise revision for a package
 ] {
     if $list {
         return (
-            ls (nupm-home) | each {|it|
-                let url = if $it.type == dir {
+            ls (nupm-home) | where type == dir | each {|it|
+                let url = (
                     git -C $it.name remote -v
                     | detect columns --no-headers
                     | where column0 == "origin"
                     | get 0.column1
-                } else if $it.type == file {
-                    let package = ($it.name | path basename | open file-package)
+                )
 
-                    [
-                        "https://raw.githubusercontent.com"
-                        $package.repo
-                        $package.revision
-                        $package.path
-                    ] | str join "/"
-                }
-
-                let revision = if $it.type == dir {
-                    $it.name | get-revision
-                } else if $it.type == file {
-                    $it.name | path basename | open file-package | get revision
-                }
+                let revision = ($it.name | get-revision)
 
                 {
                     name: ($it.name | path basename)
@@ -196,13 +143,6 @@ export def install [
             print $"installing ($package.name)"
             install-package $package.url (metadata $from_file | get span) $revision | ignore
         }
-        return
-    }
-
-    if $file != null {
-        mkdir (nupm-home | path join ".files")
-
-        install-file $file (metadata $file | get span) $revision
         return
     }
 
