@@ -162,7 +162,7 @@ export def activate [
     --list: bool  # list the activations and exit
     --from-file: path  # load activations from file
 ] {
-    let load = (nupm-home | path join "nupm.nu")
+    let load = (nupm-home | path join "nupm" "activations")
 
     let activations = ($load | open | lines)
 

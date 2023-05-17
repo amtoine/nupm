@@ -21,9 +21,9 @@ def install-nupm [directory: string] {
 def main [] {
     mkdir (nupm-home)
 
-    [''] | dump to "nupm.nu"
-
     install-nupm "nupm/"
+
+    [''] | dump to "nupm/activations"
 }
 
 main
