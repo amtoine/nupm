@@ -23,7 +23,7 @@ export-env {
 ```
 to `env.nu`
 
-3. add `use nupm.nu *` or `overlay use nupm.nu as nupm-activations` to `config.nu`
+3. add `use nupm/activations *` to `config.nu`
 4. install packages
 5. activate items
 
