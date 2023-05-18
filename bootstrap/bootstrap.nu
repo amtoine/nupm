@@ -33,12 +33,33 @@ def install-nupm [directory: string] {
     }
 }
 
+def post-bootstrap-hints [] {
+    print "add the following snippet to your $nu.env-path"
+    print ([
+        "export-env {"
+        "    let-env NUPM_HOME = ..."
+        "    let-env NU_LIB_DIRS = ($env.NU_LIB_DIRS? | default [] | append ["
+        "        $env.NUPM_HOME"
+        "    ])"
+        "}"
+    ] | str join "\n" | nu-highlight)
+
+    print ""
+
+    print "add the following snippet to your $nu.config-path"
+    print ($"use nupm/activations (char -i 42)" | nu-highlight)
+}
+
 def main [] {
     mkdir (nupm-home)
 
     install-nupm "nupm/"
 
     [''] | dump to "nupm/activations"
+
+    print ""
+
+    post-bootstrap-hints
 }
 
 main
