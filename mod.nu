@@ -126,11 +126,21 @@ def list-packages [] {
 export def install [
     url?: string  # the remote path to the package
     --list: bool  # list the installed packages and exit
+    --save: bool  # with --list, save the packages into `$env.NUPM_CONFIG.packages`
     --from-file: path  # install packages from a file
     --revision: string = "main"  # specify a precise revision for a package
 ] {
     if $list {
-        return (list-packages)
+        let packages = (list-packages)
+        if $save {
+            if $env.NUPM_CONFIG?.packages? == null {
+                error make --unspanned {msg: $"('$env.NUPM_CONFIG.packages' | nu-highlight) is not defined"}
+            }
+
+            $packages | to json | str replace --all '"(\w*)":' '${1}:' | save --force $env.NUPM_CONFIG.packages
+        }
+
+        return $packages
     }
 
     if $from_file != null {
@@ -171,12 +181,21 @@ def list-activations [] {
 export def activate [
     ...item: string  # the item to activate from a package, e.g. `nu-git-manager gm`
     --list: bool  # list the activations and exit
+    --save: bool  # with --list, save the packages into `$env.NUPM_CONFIG.activations`
     --from-file: path  # load activations from file
 ] {
     let activations = (list-activations)
 
     if $list {
-        return (list-activations)
+        if $save {
+            if $env.NUPM_CONFIG?.activations? == null {
+                error make --unspanned {msg: $"('$env.NUPM_CONFIG.activations' | nu-highlight) is not defined"}
+            }
+
+            $activations | to json | str replace --all '"(\w*)":' '${1}:' | save --force $env.NUPM_CONFIG.activations
+        }
+
+        return $activations
     }
 
     $activations | append (
