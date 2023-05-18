@@ -76,8 +76,16 @@ nupm update --self
 > no need to run `use nupm/`! :partying_face:  
 > try `nupm version` before and after an `update --self`... :smirk:
 
+## :calendar: the roadmap of `nupm`
+- [ ] install packages from a NUON file
+- [ ] hot-swap the version of packages once installed
+- [ ] update packages
+- [ ] add support for Nushell plugins, e.g. the `nu_plugin_*` in [`nushell/crates/`]
+- [ ] list all official packages and plugins in a centralized remote store
+
 [`nu-git-manager`]: https://github.com/amtoine/nu-git-manager
 [`goatfiles/nu_scripts`]: https://github.com/goatfiles/nu_scripts
 [`default_config.nu`]: https://github.com/nushell/nushell/blob/main/crates/nu-utils/src/sample_config/default_config.nu
 [goatfiles activations]: https://github.com/goatfiles/dotfiles/blob/nightly/.config/nushell/nupm/activations.nuon
 [goatfiles packages]: https://github.com/goatfiles/dotfiles/blob/nightly/.config/nushell/nupm/packages.nuon
+[`nushell/crates/`]: https://github.com/nushell/nushell/tree/main/crates
