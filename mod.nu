@@ -137,6 +137,7 @@ export def install [
                 error make --unspanned {msg: $"('$env.NUPM_CONFIG.packages' | nu-highlight) is not defined"}
             }
 
+            log info $"saving packages to ('$env.NUPM_CONFIG.packages' | nu-highlight)"
             $packages | to json | str replace --all '"(\w*)":' '${1}:' | save --force $env.NUPM_CONFIG.packages
         }
 
@@ -192,6 +193,7 @@ export def activate [
                 error make --unspanned {msg: $"('$env.NUPM_CONFIG.activations' | nu-highlight) is not defined"}
             }
 
+            log info $"saving activations to ('$env.NUPM_CONFIG.activations' | nu-highlight)"
             $activations | to json | str replace --all '"(\w*)":' '${1}:' | save --force $env.NUPM_CONFIG.activations
         }
 
