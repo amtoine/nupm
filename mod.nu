@@ -98,6 +98,25 @@ def get-revision [] {
     }
 }
 
+def list-packages [] {
+    ls (nupm-home) | where type == dir | each {|it|
+        let url = (
+            git -C $it.name remote -v
+            | detect columns --no-headers
+            | where column0 == "origin"
+            | get 0.column1
+        )
+
+        let revision = ($it.name | get-revision)
+
+        {
+            name: ($it.name | path basename)
+            revision: $revision
+            url: $url
+        }
+    }
+}
+
 # install a package locally
 #
 # `nupm install` will look for a repository with a `package.nuon` file at
@@ -111,24 +130,7 @@ export def install [
     --revision: string = "main"  # specify a precise revision for a package
 ] {
     if $list {
-        return (
-            ls (nupm-home) | where type == dir | each {|it|
-                let url = (
-                    git -C $it.name remote -v
-                    | detect columns --no-headers
-                    | where column0 == "origin"
-                    | get 0.column1
-                )
-
-                let revision = ($it.name | get-revision)
-
-                {
-                    name: ($it.name | path basename)
-                    revision: $revision
-                    url: $url
-                }
-            }
-        )
+        return (list-packages)
     }
 
     if $from_file != null {
@@ -148,6 +150,10 @@ export def install [
     install-package $url (metadata $url | get span) $revision
 }
 
+def list-activations [] {
+    $activations | str replace '^export use ' '' | sort
+}
+
 # activate package items
 #
 # once a package has been installed, its items must be activated to be used
@@ -162,7 +168,7 @@ export def activate [
     let activations = ($load | open | lines)
 
     if $list {
-        return ($activations | str replace '^export use ' '' | sort)
+        return (list-activations)
     }
 
     $activations | append (
