@@ -10,7 +10,7 @@ def "dump to" [file: string] {
     let content = ($in | str join "\n")
     let file = (nupm-home | path join $file)
 
-    print $"dumping (ansi green)($content)(ansi reset) to (ansi yellow)($file)(ansi reset)"
+    print $"dumping ($content | nu-highlight) to (ansi yellow)($file)(ansi reset)"
     $content | save --force $file
 }
 
