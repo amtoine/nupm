@@ -150,9 +150,19 @@ export def install [
     install-package $url (metadata $url | get span) $revision
 }
 
-def list-activations [] {
-    $activations | str replace '^export use ' '' | sort
+def activation-file [] {
+    nupm-home | path join "nupm" "activations"
 }
+
+def list-activations [] {
+    activation-file
+    | open
+    | lines
+    | str replace '^export use ' ''
+    | sort
+}
+
+
 
 # activate package items
 #
@@ -163,9 +173,7 @@ export def activate [
     --list: bool  # list the activations and exit
     --from-file: path  # load activations from file
 ] {
-    let load = (nupm-home | path join "nupm" "activations")
-
-    let activations = ($load | open | lines)
+    let activations = (list-activations)
 
     if $list {
         return (list-activations)
@@ -174,15 +182,13 @@ export def activate [
     $activations | append (
         if $from_file != null {
             log info $"activating from file ($from_file)"
-            open $from_file | each {|it|
-                "export use " ++ $it
-            }
+            open $from_file
         } else {
             let item = ($item| str join ' ')
             log info $"`use`ing `($item)`"
-            $"export use ($item)"
+            $item
         }
-    ) | uniq | save --force $load
+    ) | uniq | each {|item| $"export use ($item)"} | save --force (activation-file)
 }
 
 # update a package or the package manager itself
