@@ -34,7 +34,7 @@ def install-nupm [directory: string] {
 }
 
 def post-bootstrap-hints [] {
-    print "add the following snippet to your $nu.env-path"
+    print $"add the following snippet to your ('$nu.env-path' | nu-highlight)"
     print ([
         "export-env {"
         "    let-env NUPM_HOME = ..."
@@ -57,7 +57,7 @@ def post-bootstrap-hints [] {
 
     print ""
 
-    print "add the following snippet to your $nu.config-path"
+    print $"add the following snippet to your ('$nu.config-path' | nu-highlight)"
     print ($"use nupm/activations (char -i 42)" | nu-highlight)
 }
 
