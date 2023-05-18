@@ -128,7 +128,7 @@ def save-to [
     }
 
     log info $"saving packages to ($env_path_name | nu-highlight)"
-    $data | to json | str replace --all '"(\w*)":' '${1}:' | save --force ($env | get $env_path)
+    $data | to json --indent 4 | str replace --all '"(\w*)":' '${1}:' | save --force ($env | get $env_path)
 }
 
 # install a package locally
