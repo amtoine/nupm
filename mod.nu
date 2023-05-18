@@ -182,8 +182,6 @@ def list-activations [] {
     | sort
 }
 
-
-
 # activate package items
 #
 # once a package has been installed, its items must be activated to be used
@@ -238,7 +236,6 @@ export def version [] {
     let repo = (nupm-home | path join "nupm")
 
     $"($repo | get-revision) (char lparen)(git -C $repo rev-parse --short HEAD)(char rparen)"
-
 }
 
 # a manager for Nushell packages
