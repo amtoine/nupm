@@ -22,6 +22,14 @@ export-env {
 }
 ```
 to `env.nu`
+> **Note**  
+> it is also recommended to add the following to allow the use of the `--save` option on `install` and `activate`
+> ```nu
+> let-env NUPM_CONFIG = {
+>     activations: ...
+>     packages: ...
+> }
+> ```
 
 3. add `use nupm/activations *` to `config.nu`
 4. install packages

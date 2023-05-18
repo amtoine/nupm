@@ -46,6 +46,17 @@ def post-bootstrap-hints [] {
 
     print ""
 
+    print "it is also recommended to add the following to allow the use of the `--save` option on `install` and `activate`"
+
+    print ([
+        "let-env NUPM_CONFIG = {"
+        "    activations: ..."
+        "    packages: ..."
+        "}"
+    ] | str join "\n" | nu-highlight)
+
+    print ""
+
     print "add the following snippet to your $nu.config-path"
     print ($"use nupm/activations (char -i 42)" | nu-highlight)
 }
