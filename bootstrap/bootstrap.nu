@@ -17,7 +17,15 @@ def "dump to" [file: string] {
 }
 
 def install-nupm [directory: string] {
-    git clone https://github.com/amtoine/nupm.git (nupm-home | path join $directory)
+    let destination = (nupm-home | path join $directory)
+
+    if ($destination | path exists) {
+        log info $"($destination) already exists: updating"
+        git -C $destination pull origin main
+    } else {
+        log info $"installing ($destination)"
+        git clone https://github.com/amtoine/nupm.git $destination
+    }
 }
 
 def main [] {
