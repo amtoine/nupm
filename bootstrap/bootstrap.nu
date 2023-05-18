@@ -1,3 +1,5 @@
+use std "log info"
+
 def nupm-home [] {
     $env.NUPM_HOME? | default (
         $env.XDG_DATA_HOME?
@@ -10,7 +12,7 @@ def "dump to" [file: string] {
     let content = ($in | str join "\n")
     let file = (nupm-home | path join $file)
 
-    print $"dumping ($content | nu-highlight) to (ansi yellow)($file)(ansi reset)"
+    log info $"dumping ($content | nu-highlight) to (ansi yellow)($file)(ansi reset)"
     $content | save --force $file
 }
 
