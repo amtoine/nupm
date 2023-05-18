@@ -91,6 +91,22 @@ nupm update --self
 - [ ] add support for Nushell plugins, e.g. the `nu_plugin_*` in [`nushell/crates/`]
 - [ ] list all official packages and plugins in a centralized remote store
 
+## :exclamation: some ideas of advanced (?) usage
+in order to load `nupm` in the blink of an eye, i've added the following to my `$env.config.keybindings`:
+```nu
+{
+    name: nupm
+    modifier: control
+    keycode: char_n
+    mode: [emacs, vi_insert, vi_normal]
+    event: {
+        send: executehostcommand
+        cmd: "overlay use --prefix nupm"
+    }
+}
+```
+which allows me to load `nupm` ***BLAZZINGLY FAST*** on `<c-n>` :muscle:
+
 [`nu-git-manager`]: https://github.com/amtoine/nu-git-manager
 [`goatfiles/nu_scripts`]: https://github.com/goatfiles/nu_scripts
 [`default_config.nu`]: https://github.com/nushell/nushell/blob/main/crates/nu-utils/src/sample_config/default_config.nu
