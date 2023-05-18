@@ -117,6 +117,20 @@ def list-packages [] {
     }
 }
 
+def save-to [
+    env_path: cell-path
+    env_path_name: string
+] {
+    let data = $in
+
+    if ($env | get $env_path) == null {
+        error make --unspanned {msg: $"($env_path_name | nu-highlight) is not defined"}
+    }
+
+    log info $"saving packages to ($env_path_name | nu-highlight)"
+    $data | to json | str replace --all '"(\w*)":' '${1}:' | save --force ($env | get $env_path)
+}
+
 # install a package locally
 #
 # `nupm install` will look for a repository with a `package.nuon` file at
@@ -133,12 +147,7 @@ export def install [
     if $list {
         let packages = (list-packages)
         if $save {
-            if $env.NUPM_CONFIG?.packages? == null {
-                error make --unspanned {msg: $"('$env.NUPM_CONFIG.packages' | nu-highlight) is not defined"}
-            }
-
-            log info $"saving packages to ('$env.NUPM_CONFIG.packages' | nu-highlight)"
-            $packages | to json | str replace --all '"(\w*)":' '${1}:' | save --force $env.NUPM_CONFIG.packages
+            $packages | save-to $.NUPM_CONFIG.packages "$env.NUPM_CONFIG.packages"
         }
 
         return $packages
@@ -189,12 +198,7 @@ export def activate [
 
     if $list {
         if $save {
-            if $env.NUPM_CONFIG?.activations? == null {
-                error make --unspanned {msg: $"('$env.NUPM_CONFIG.activations' | nu-highlight) is not defined"}
-            }
-
-            log info $"saving activations to ('$env.NUPM_CONFIG.activations' | nu-highlight)"
-            $activations | to json | str replace --all '"(\w*)":' '${1}:' | save --force $env.NUPM_CONFIG.activations
+            $activations | save-to $.NUPM_CONFIG.activations "$env.NUPM_CONFIG.activations"
         }
 
         return $activations
