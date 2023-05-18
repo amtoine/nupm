@@ -239,4 +239,14 @@ export def version [] {
 }
 
 # a manager for Nushell packages
-export def main [] { help nupm }
+export def main [] {
+    print -n (help nupm)
+
+    print ([
+        $"(ansi green)Environment(ansi reset):"
+        $"    (ansi cyan)NUPM_HOME(ansi reset) - a path to install packages and look for definitions with ('use' | nu-highlight)"
+        $"    (ansi cyan)NUPM_CONFIG.packages(ansi reset) - the path to ('--save' | nu-highlight) the packages with ('nupm install --list' | nu-highlight) "
+        $"    (ansi cyan)NUPM_CONFIG.activations(ansi reset) - the path to ('--save' | nu-highlight) the activations with ('nupm activate --list' | nu-highlight) "
+    ] | str join "\n" | nu-highlight)
+
+}
