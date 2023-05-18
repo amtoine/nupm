@@ -76,11 +76,6 @@ def install-package [
     }
 }
 
-def "open file-package" [] {
-    let $file = $in
-    nupm-home | path join ".files" $file | open | from nuon
-}
-
 def get-revision [] {
     let repo = $in
 
