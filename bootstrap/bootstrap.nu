@@ -12,6 +12,11 @@ def "dump to" [file: string] {
     let content = ($in | str join "\n")
     let file = (nupm-home | path join $file)
 
+    if ($file | path exists) {
+        log info $"($file) already exists: skipping"
+        return
+    }
+
     log info $"dumping ($content | nu-highlight) to (ansi yellow)($file)(ansi reset)"
     $content | save --force $file
 }
