@@ -90,6 +90,7 @@ nupm update --self
 - [ ] update packages
 - [ ] add support for Nushell plugins, e.g. the `nu_plugin_*` in [`nushell/crates/`]
 - [ ] list all official packages and plugins in a centralized remote store
+- [ ] support unit and integration tests of Nushell packages
 
 ## :exclamation: some ideas of advanced (?) usage
 in order to load `nupm` in the blink of an eye, i've added the following to my `$env.config.keybindings`:
