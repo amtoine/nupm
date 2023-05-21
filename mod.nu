@@ -4,7 +4,7 @@ use std [
 ]
 
 export-env {
-    if ($env.NUPM_PROMPT? | default true) {
+    if ($env.NUPM_CONFIG?.set_prompt? | default true) {
         let-env PROMPT_COMMAND_RIGHT = "(nupm)"
     }
 }
@@ -249,7 +249,7 @@ export def main [] {
         $"    (ansi cyan)NUPM_HOME(ansi reset) - a path to install packages and look for definitions with ('use' | nu-highlight)"
         $"    (ansi cyan)NUPM_CONFIG.packages(ansi reset) - the path to ('--save' | nu-highlight) the packages with ('nupm install --list' | nu-highlight) "
         $"    (ansi cyan)NUPM_CONFIG.activations(ansi reset) - the path to ('--save' | nu-highlight) the activations with ('nupm activate --list' | nu-highlight) "
-        $"    (ansi cyan)NUPM_PROMPT(ansi reset) - whether to modify the right prompt or not (char lparen)defaults to ('true' | nu-highlight)(char rparen)"
+        $"    (ansi cyan)NUPM_CONFIG.set_prompt(ansi reset) - whether to modify the right prompt or not (char lparen)defaults to ('true' | nu-highlight)(char rparen)"
     ] | str join "\n" | nu-highlight)
 
 }
