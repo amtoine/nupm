@@ -18,6 +18,21 @@ def nupm-home [] {
     )
 }
 
+def throw-error [
+    error: string
+    label: string
+    span: record<start: int, end: int>
+] {
+    error make {
+        msg: $"(ansi red_bold)nupm::($error)(ansi reset)"
+        label: {
+            text: $label
+            start: $span.start
+            end: $span.end
+        }
+    }
+}
+
 def parse-project [
     span: record<start: int, end: int>
 ] {
@@ -29,14 +44,7 @@ def parse-project [
         | parse "github.com/{project}"
     )
     if ($project | is-empty) {
-        error make {
-            msg: $"(ansi red_bold)nupm::invalid_project_name(ansi reset)"
-            label: {
-                text: $"not a valid project URL"
-                start: $span.start
-                end: $span.end
-            }
-        }
+        throw-error "invalid_project_name" "not a valid project URL" $span
     }
 
     $project | get 0.project
@@ -53,14 +61,7 @@ def install-package [
     let package = (try {
         http get $"https://raw.githubusercontent.com/($project)/($revision)/package.nuon"
     } catch {
-        error make {
-            msg: $"(ansi red_bold)nupm::not_a_package(ansi reset)"
-            label: {
-                text: $"($project) does not have a `package.nuon` file"
-                start: $span.start
-                end: $span.end
-            }
-        }
+        throw-error "not_a_package" $"(ansi magenta)does not have a ('package.nuon' | nu-highlight) (ansi magenta)file" $span
     })
     log info "package ok"
 
@@ -254,19 +255,13 @@ export def update [
         log info $"updating ($package)..."
         git -C $repo pull origin $revision
     } else {
+        let label = $"does not track a branch: ($revision)"
+
         if not $ignore {
-            let span = (metadata $package | get span)
-            error make {
-                msg: $"(ansi red_bold)non_updatable_package(ansi reset)"
-                label: {
-                    text: $"($package) can not be updated because it does not track a branch: ($revision)"
-                    start: $span.start
-                    end: $span.end
-                }
-            }
+            throw-error "can_not_update_package" $label (metadata $package | get span)
         }
 
-        log error $"($package) can not be updated because it does not track a branch: ($revision)"
+        log error ($package ++ ' ' ++ $label)
     }
 }
 
