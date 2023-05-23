@@ -91,10 +91,10 @@ def get-revision [] {
     )
     let branch = (git -C $repo branch --show-current | str trim)
 
-    if $is_tag {
-        $tag.stdout | str trim
-    } else if not ($branch | is-empty) {
+    if not ($branch | is-empty) {
         $branch
+    } else if $is_tag {
+        $tag.stdout | str trim
     } else {
         git -C $repo rev-parse HEAD | str trim
     }
