@@ -77,6 +77,8 @@ nupm install --list
 one can use the following to update the package manager
 ```nu
 nupm update --self
+# or
+nupm update nupm
 ```
 
 or something like this to update all the packages
