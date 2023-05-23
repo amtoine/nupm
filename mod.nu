@@ -164,6 +164,7 @@ export def install [
     }
 
     if $from_file != null {
+        # TODO
         error make --unspanned {msg: "installation from file not permitted for now!"}
 
         open $from_file | transpose name url | each {|package|
