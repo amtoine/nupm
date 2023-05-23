@@ -229,7 +229,7 @@ def "nu-complete list packages" [] {
 
 # update a package or the package manager itself
 export def update [
-    package?: string@"nu-complete list packages"
+    package?: string@"nu-complete list packages"  # the name of the package to update
     --self: bool  # perform an update of `nupm` itself
     --ignore: bool  # ignore any error
 ] {
