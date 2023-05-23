@@ -78,7 +78,9 @@ def install-package [
     }
 }
 
-def get-revision [] {
+def get-revision [
+    --is-branch: bool
+] {
     let repo = $in
 
     let tag = (do -i {
@@ -90,6 +92,10 @@ def get-revision [] {
         | is-empty
     )
     let branch = (git -C $repo branch --show-current | str trim)
+
+    if $is_branch {
+        return (not ($branch | is-empty))
+    }
 
     if not ($branch | is-empty) {
         $branch
@@ -216,8 +222,13 @@ export def activate [
     ) | uniq | each {|item| $"export use ($item)"} | save --force (activation-file)
 }
 
+def "nu-complete list packages" [] {
+    ls (nupm-home) | where type == dir | get name | path parse | get stem
+}
+
 # update a package or the package manager itself
 export def update [
+    package?: string@"nu-complete list packages"
     --self: bool  # perform an update of `nupm` itself
 ] {
     if $self {
@@ -230,7 +241,27 @@ export def update [
         exec nu -e 'use nupm/'
     }
 
-    error make --unspanned {msg: "`nupm update` not implemented."}
+    if $package == null {
+        error make --unspanned {msg: "`nupm update` takes a positional argument: package."}
+    }
+
+    let repo = (nupm-home | path join $package)
+    let revision = ($repo | get-revision)
+
+    if ($repo | get-revision --is-branch) {
+        log info $"updating ($package)..."
+        git -C $repo pull origin $revision
+    } else {
+        let span = (metadata $package | get span)
+        error make {
+            msg: $"(ansi red_bold)non_updatable_package(ansi reset)"
+            label: {
+                text: $"($package) can not be updated because it does not track a branch: ($revision)"
+                start: $span.start
+                end: $span.end
+            }
+        }
+    }
 }
 
 # print the version and exit
