@@ -110,12 +110,12 @@ nupm install --list
 > try `nupm version` before and after an `update --self`... :smirk:
 
 ## :calendar: the roadmap of `nupm`
-- [ ] install packages from a NUON file
-- [x] hot-swap the version of packages once installed
-- [x] update packages
-- [ ] add support for Nushell plugins, e.g. the `nu_plugin_*` in [`nushell/crates/`]
-- [ ] list all official packages and plugins in a centralized remote store
-- [ ] support unit and integration tests of Nushell packages
+- :red_circle: install packages from a NUON file
+- :green_circle: hot-swap the version of packages once installed
+- :green_circle: update packages
+- :red_circle: add support for Nushell plugins, e.g. the `nu_plugin_*` in [`nushell/crates/`]
+- :red_circle: list all official packages and plugins in a centralized remote store
+- :red_circle: support unit and integration tests of Nushell packages
 
 ## :exclamation: some ideas of advanced (?) usage
 in order to load `nupm` in the blink of an eye, i've added the following to my `$env.config.keybindings`:
