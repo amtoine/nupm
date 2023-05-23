@@ -270,6 +270,14 @@ export def update [
     }
 }
 
+# switch the version of a package
+export def switch [
+    package: string@"nu-complete list packages"  # the name of the package to switch version
+    revision: string  # the new revision for the package
+] {
+    git -C (nupm-home | path join $package) checkout $revision
+}
+
 # print the version and exit
 export def version [] {
     let repo = (nupm-home | path join "nupm")
