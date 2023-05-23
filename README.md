@@ -73,6 +73,22 @@ nupm install --list
 | save --force ($nu.config-path | path dirname | path join "nupm" "packages.nuon")
 ```
 
+> **Note**  
+> alternatively, one can define `NUPM_CONFIG` in `env.nu`, e.g.
+> ```nu
+> let-env NUPM_CONFIG = {
+>     activations: ($nu.default-config-dir | path join "nupm" "activations.nuon")
+>     packages: ($nu.default-config-dir | path join "nupm" "packages.nuon")
+>     set_prompt: false
+> }
+> ```
+> and then use the `--save` option of `nupm install` and `nupm activate` to dump
+> the installed packaged and activated items to the files in `NUPM_CONFIG`, e.g.
+> ```nu
+> nupm install --list --save
+> nupm activate --list --save
+> ```
+
 ## :recycle: update `nupm`
 one can use the following to update the package manager
 ```nu
