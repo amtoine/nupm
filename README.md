@@ -79,6 +79,13 @@ one can use the following to update the package manager
 nupm update --self
 ```
 
+or something like this to update all the packages
+```nu
+nupm install --list
+| get name
+| each {|pkg| nupm update $pkg --ignore}
+```
+
 > **Note**  
 > `nupm update --self` will automagically reload itself after the update,
 > no need to run `use nupm/`! :partying_face:  
