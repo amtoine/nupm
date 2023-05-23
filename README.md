@@ -111,8 +111,8 @@ nupm install --list
 
 ## :calendar: the roadmap of `nupm`
 - [ ] install packages from a NUON file
-- [ ] hot-swap the version of packages once installed
-- [ ] update packages
+- [x] hot-swap the version of packages once installed
+- [x] update packages
 - [ ] add support for Nushell plugins, e.g. the `nu_plugin_*` in [`nushell/crates/`]
 - [ ] list all official packages and plugins in a centralized remote store
 - [ ] support unit and integration tests of Nushell packages
