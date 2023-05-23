@@ -1,6 +1,7 @@
 use std [
     "log info"
     "log debug"
+    "log error"
 ]
 
 export-env {
@@ -252,16 +253,20 @@ export def update [
     if ($repo | get-revision --is-branch) {
         log info $"updating ($package)..."
         git -C $repo pull origin $revision
-    } else if not $ignore {
-        let span = (metadata $package | get span)
-        error make {
-            msg: $"(ansi red_bold)non_updatable_package(ansi reset)"
-            label: {
-                text: $"($package) can not be updated because it does not track a branch: ($revision)"
-                start: $span.start
-                end: $span.end
+    } else {
+        if not $ignore {
+            let span = (metadata $package | get span)
+            error make {
+                msg: $"(ansi red_bold)non_updatable_package(ansi reset)"
+                label: {
+                    text: $"($package) can not be updated because it does not track a branch: ($revision)"
+                    start: $span.start
+                    end: $span.end
+                }
             }
         }
+
+        log error $"($package) can not be updated because it does not track a branch: ($revision)"
     }
 }
 
