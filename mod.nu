@@ -235,9 +235,15 @@ export def update [
     --all: bool  # update all install packages, have precedence over `package` and `--self`
     --self: bool  # perform an update of `nupm` itself
     --ignore: bool  # ignore any error
+    --reload: bool  # reload Nushell once the update is done
 ] {
     if $all {
         nu-complete list packages | each { update $in --ignore }
+
+        if $reload {
+            log info "reloading Nushell..."
+            exec nu -e "use nupm/"
+        }
         return
     }
 
@@ -247,8 +253,11 @@ export def update [
         git -C $nupm pull origin main
         log debug $"($nupm) up-to-date"
 
-        log info "loading new nupm!"
-        exec nu -e 'use nupm/'
+        if $reload {
+            log info "reloading up-to-date nupm!"
+            exec nu -e 'use nupm/'
+        }
+        return
     }
 
     if $package == null {
@@ -261,6 +270,16 @@ export def update [
     if ($repo | get-revision --is-branch) {
         log info $"updating ($package)..."
         git -C $repo pull origin $revision
+
+        if $reload {
+            log info "reloading Nushell!"
+            if $package == "nupm" {
+                exec nu -e 'use nupm/'
+            } else {
+                exec nu
+            }
+        }
+        return
     } else {
         let label = $"does not track a branch: ($revision)"
 
