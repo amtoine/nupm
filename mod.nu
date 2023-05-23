@@ -230,6 +230,7 @@ def "nu-complete list packages" [] {
 export def update [
     package?: string@"nu-complete list packages"
     --self: bool  # perform an update of `nupm` itself
+    --ignore: bool  # ignore any error
 ] {
     if $self {
         log info "updating nupm..."
@@ -251,7 +252,7 @@ export def update [
     if ($repo | get-revision --is-branch) {
         log info $"updating ($package)..."
         git -C $repo pull origin $revision
-    } else {
+    } else if not $ignore {
         let span = (metadata $package | get span)
         error make {
             msg: $"(ansi red_bold)non_updatable_package(ansi reset)"
