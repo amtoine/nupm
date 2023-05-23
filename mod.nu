@@ -232,9 +232,15 @@ def "nu-complete list packages" [] {
 # update a package or the package manager itself
 export def update [
     package?: string@"nu-complete list packages"  # the name of the package to update
+    --all: bool  # update all install packages, have precedence over `package` and `--self`
     --self: bool  # perform an update of `nupm` itself
     --ignore: bool  # ignore any error
 ] {
+    if $all {
+        nu-complete list packages | each { update $in --ignore }
+        return
+    }
+
     if $self {
         log info "updating nupm..."
         let nupm = (nupm-home | path join "nupm")

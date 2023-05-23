@@ -102,6 +102,8 @@ or something like this to update all the packages
 nupm install --list
 | get name
 | each {|pkg| nupm update $pkg --ignore}
+# or
+nupm update --all
 ```
 
 > **Note**  
