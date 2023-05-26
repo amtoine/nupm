@@ -1,8 +1,4 @@
-use std [
-    "log info"
-    "log debug"
-    "log error"
-]
+use std log
 
 export-env {
     if ($env.NUPM_CONFIG?.set_prompt? | default true) {

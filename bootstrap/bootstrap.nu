@@ -1,4 +1,4 @@
-use std "log info"
+use std log
 
 def nupm-home [] {
     $env.NUPM_HOME? | default (
