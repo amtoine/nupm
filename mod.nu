@@ -313,5 +313,4 @@ export def main [] {
         $"    (ansi cyan)NUPM_CONFIG.activations(ansi reset) - the path to ('--save' | nu-highlight) the activations with ('nupm activate --list' | nu-highlight) "
         $"    (ansi cyan)NUPM_CONFIG.set_prompt(ansi reset) - whether to modify the right prompt or not (char lparen)defaults to ('true' | nu-highlight)(char rparen)"
     ] | str join "\n" | nu-highlight)
-
 }
