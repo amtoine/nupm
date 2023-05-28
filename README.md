@@ -1,6 +1,8 @@
 # nupm
 A manager for Nushell packages.
 
+# :postal_horn: this project has been archived => please refer to the [official `nupm` package manager of Nushell](https://github.com/nushell/nupm)
+
 ## :recycle: installation
 1. run
 ```nu
